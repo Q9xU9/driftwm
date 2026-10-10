@@ -189,7 +189,7 @@ DEPS=(
     git base-devel cmake ninja
     qt6-base qt6-declarative qt6-wayland
     wayland wayland-protocols pipewire
-    libxkbcommon wl-clipboard cli11
+    libxkbcommon wl-clipboard cli11 vulkan-headers
 )
 
 info "Проверяем и доставляем ${#DEPS[@]} пакетов..."
