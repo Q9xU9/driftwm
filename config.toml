@@ -107,8 +107,8 @@ type = "default"
 [bindings]
 
 [keybindings]
-"mod+space" = "spawn qs ipc -c noctalia-shell call launcher toggle"
-"mod+return" = "spawn kitty"
+"mod+space" = "spawn noctalia msg panel-toggle launcher"
+"mod+return" = "spawn alacritty"
 "mod+q" = "close-window"
 "mod+e" = "toggle-cursor-pan"
 "mod+f" = "toggle-fullscreen"
