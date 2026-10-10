@@ -42,7 +42,7 @@ enable = true
 [input.tablet]
 
 [cursor]
-size = 24
+size = 18
 inactive_opacity = 0.6
 
 [navigation]
@@ -79,8 +79,8 @@ corners = true
 centers = true
 
 [decorations]
-bg_color = "#1e1e2e"
-fg_color = "#cdd6f4"
+bg_color = "#1e1e1e"
+fg_color = "#f2f2f2"
 corner_radius = 12
 shadow = true
 title_bar_height = 28
