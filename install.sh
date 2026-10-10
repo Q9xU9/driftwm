@@ -200,44 +200,48 @@ ok "Все зависимости на месте"
 # 3) noctalia-qs
 # ─────────────────────────────────────
 
-header 3 "noctalia-qs (Quickshell)"
+# ─────────────────────────────────────
+# 3) Quickshell (qs)
+# ─────────────────────────────────────
+
+header 3 "Quickshell (qs)"
 
 if command -v qs &>/dev/null; then
     ok "qs уже установлен — пропускаем"
 else
-    info "Собираем noctalia-qs из исходников..."
+    # Пробуем сначала AUR (актуальный код, совместим с Qt 6.12 / GCC 16)
+    info "Устанавливаем quickshell-git из AUR..."
+    if $AUR_HELPER -S --noconfirm --needed quickshell-git; then
+        ok "quickshell-git установлен из AUR"
+    else
+        # Фоллбэк: официальный репо quickshell (не форк noctalia)
+        warn "AUR не сработал, собираем из официального репо..."
 
-    BUILD_DIR=$(mktemp -d /tmp/noctalia-build.XXXXXX)
-    git clone --depth 1 https://github.com/linuxmobile/noctalia-qs.git "$BUILD_DIR/noctalia-qs"
+        BUILD_DIR=$(mktemp -d /tmp/noctalia-build.XXXXXX)
+        git clone --depth 1 https://github.com/quickshell-mirror/quickshell.git \
+            "$BUILD_DIR/quickshell"
 
-    cd "$BUILD_DIR/noctalia-qs"
+        cd "$BUILD_DIR/quickshell"
 
-    cmake -GNinja -B build \
-        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-        -DCMAKE_INSTALL_PREFIX=/usr/local
+        cmake -GNinja -B build \
+            -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+            -DCMAKE_INSTALL_PREFIX=/usr/local
 
-    if ! cmake --build build; then
-        err "Сборка noctalia-qs не удалась. Лог: ${DIM}${LOG_FILE}${NC}"
-        exit 1
-    fi
-
-    sudo cmake --install build
-    cd "$HOME"
-
-    rm -rf "$BUILD_DIR"
-    BUILD_DIR=""
-
-    # Убедимся что /usr/local/bin в PATH
-    if ! command -v qs &>/dev/null; then
-        if [ -x /usr/local/bin/qs ]; then
-            warn "'qs' не в PATH, но найден в /usr/local/bin/"
-            warn "Добавь в ~/.bashrc: export PATH=\$PATH:/usr/local/bin"
-        else
-            err "Сборка завершилась, но бинарник 'qs' не найден"
+        if ! cmake --build build; then
+            err "Сборка quickshell не удалась. Лог: ${DIM}${LOG_FILE}${NC}"
             exit 1
         fi
-    else
-        ok "noctalia-qs собран и установлен"
+
+        sudo cmake --install build
+        cd "$HOME"
+        rm -rf "$BUILD_DIR"
+        BUILD_DIR=""
+
+        if ! command -v qs &>/dev/null && [ ! -x /usr/local/bin/qs ]; then
+            err "Бинарник 'qs' не найден после установки"
+            exit 1
+        fi
+        ok "quickshell собран и установлен"
     fi
 fi
 
